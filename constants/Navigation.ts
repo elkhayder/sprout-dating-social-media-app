@@ -4,4 +4,5 @@ export default {
    Inbox: "Inbox",
    Settings: "Settings",
    Discover: "Discover",
+   Profile: "Profile",
 };

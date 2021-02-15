@@ -1,50 +1,58 @@
 import * as React from "react";
-import {
-   Image,
-   StyleSheet,
-   TouchableWithoutFeedback,
-   ViewStyle,
-} from "react-native";
-import { FontAwesome, AntDesign } from "@expo/vector-icons";
+import { StatusBar, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { FontAwesome, AntDesign, Feather, Octicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { Text, View } from "../components/Themed";
+import ProfileImagesSlider from "../components/ProfileImagesSlider";
 import Layout from "../constants/Layout";
+import { useNavigation } from "@react-navigation/core";
+import NavigationRoutes from "../constants/Navigation";
+import { Users } from "../data/Users";
+import { UserProfile } from "../types";
+
+import getAgeFromTimestamp from "../functions/getAgeFromTimestamp";
 import Colors from "../constants/Colors";
 
 const SwiperRefContext = React.createContext<any>(null);
 
 export default function CardsScreen() {
    const SwiperRef = React.useRef<Swiper<any> | null>(null);
+
    return (
-      <View
-         style={{
-            flex: 1,
-            // alignItems: "center",
-            // justifyContent: "center",
-            position: "relative",
-            paddingHorizontal: 16,
-         }}
-      >
-         <SwiperRefContext.Provider value={SwiperRef}>
-            <Swiper
-               ref={SwiperRef}
-               cards={Array(10).fill(100)}
-               renderCard={(props) => <RenderCard {...props} />}
-               // verticalSwipe={false}
-               disableBottomSwipe
-               containerStyle={{ backgroundColor: "transparent" }}
-               cardVerticalMargin={35}
-               cardHorizontalMargin={16}
-               animateCardOpacity
-               showSecondCard
-               stackSize={2}
-               infinite
-            />
-            <CallToActionButtons />
-         </SwiperRefContext.Provider>
-      </View>
+      <>
+         <CardsScreenHeader />
+         <View
+            style={{
+               flex: 1,
+               // alignItems: "center",
+               // justifyContent: "center",
+               position: "relative",
+               paddingHorizontal: 16,
+            }}
+         >
+            <SwiperRefContext.Provider value={SwiperRef}>
+               <Swiper
+                  ref={SwiperRef}
+                  cards={Users}
+                  renderCard={(cardData: UserProfile, cardIndex: number) => (
+                     <RenderCard userData={cardData} userIndex={cardIndex} />
+                  )}
+                  // verticalSwipe={false}
+                  disableBottomSwipe
+                  containerStyle={{ backgroundColor: "transparent" }}
+                  cardVerticalMargin={35}
+                  cardHorizontalMargin={16}
+                  animateCardOpacity
+                  showSecondCard
+                  stackSize={2}
+                  infinite
+               />
+               <CallToActionButtons />
+            </SwiperRefContext.Provider>
+         </View>
+      </>
    );
 }
 
@@ -98,11 +106,18 @@ const CallToActionButtons = () => {
    );
 };
 
-const RenderCard = (props: { cardData: any; cardIndex: number }) => {
-   const { cardIndex, cardData } = props;
-
+const RenderCard = ({
+   userData,
+   userIndex,
+}: {
+   userData: UserProfile;
+   userIndex: number;
+}) => {
+   const navigation = useNavigation();
+   console.log(userData);
    return (
       <View
+         key={userData.id}
          transparent
          style={{
             position: "relative",
@@ -116,16 +131,25 @@ const RenderCard = (props: { cardData: any; cardIndex: number }) => {
             // height: (Layout.window.width * 16) / 9,
          }}
       >
-         <ImagesContainer
-            images={[
-               "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=800",
-               "https://images.unsplash.com/photo-1516726817505-f5ed825624d8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
-               "https://images.unsplash.com/photo-1467632499275-7a693a761056?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
-               "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=662&q=80",
-               "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80",
-               "https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80",
-            ]}
-         />
+         <View
+            transparent
+            style={{
+               position: "relative",
+               overflow: "hidden",
+               backgroundColor: Colors.dark.background,
+               width: Layout.window.width - 32,
+               aspectRatio: 15 / 21,
+               borderTopLeftRadius: 25,
+               borderTopRightRadius: 25,
+               borderBottomLeftRadius: 35,
+               borderBottomRightRadius: 35,
+            }}
+         >
+            <ProfileImagesSlider
+               images={userData.images}
+               aspectRatio={15 / 21}
+            />
+         </View>
          <View
             transparent
             style={{
@@ -133,21 +157,45 @@ const RenderCard = (props: { cardData: any; cardIndex: number }) => {
                width: "100%",
                left: 0,
                bottom: 60,
-               paddingLeft: 24,
+               paddingHorizontal: 24,
+               paddingRight: 16,
                zIndex: 3,
                overflow: "hidden",
+               flexDirection: "row",
+               alignItems: "center",
+               justifyContent: "space-between",
             }}
-            pointerEvents="none"
          >
-            <Text
-               style={{ fontSize: 26, fontFamily: "Sofia_Bold" }}
-               numberOfLines={1}
+            <View transparent>
+               <Text
+                  style={{ fontSize: 26, fontFamily: "Sofia_Bold" }}
+                  numberOfLines={1}
+               >
+                  {userData.name}, {getAgeFromTimestamp(userData.birthday)}
+               </Text>
+               <Text style={{ fontSize: 14 }} numberOfLines={1}>
+                  IT Manager
+               </Text>
+            </View>
+            <TouchableWithoutFeedback
+               onPress={() =>
+                  navigation.navigate(NavigationRoutes.Profile, {
+                     profile: userData,
+                  })
+               }
             >
-               Zakaria, 17
-            </Text>
-            <Text style={{ fontSize: 14 }} numberOfLines={1}>
-               IT Manager
-            </Text>
+               <View
+                  transparent
+                  style={{
+                     width: 30,
+                     height: 30,
+                     alignItems: "center",
+                     justifyContent: "center",
+                  }}
+               >
+                  <Feather name="more-vertical" size={24} color="#ffffff" />
+               </View>
+            </TouchableWithoutFeedback>
          </View>
 
          <LinearGradient
@@ -167,110 +215,52 @@ const RenderCard = (props: { cardData: any; cardIndex: number }) => {
    );
 };
 
-const ImagesContainer = ({ images }: { images: string[] }) => {
-   const [imageIndex, setImageIndex] = React.useState<number>(0);
-
-   const viewsSize = {
-      width: Layout.window.width - 32,
-      aspectRatio: 15 / 21,
-      borderTopLeftRadius: 25,
-      borderTopRightRadius: 25,
-      borderBottomLeftRadius: 35,
-      borderBottomRightRadius: 35,
-      // height: (Layout.window.width * 16) / 9,
-   };
-
+const CardsScreenHeader = () => {
    return (
       <View
-         transparent
          style={{
-            position: "relative",
-            overflow: "hidden",
-            backgroundColor: Colors.dark.background,
-            ...viewsSize,
+            paddingTop: 20 + StatusBar?.currentHeight,
+            paddingHorizontal: 16,
+            // height: 150,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
          }}
+         // transparent
       >
-         <View
-            style={{
-               position: "absolute",
-               top: 0,
-               alignSelf: "center",
-               height: 30,
-               backgroundColor: "rgba(0,0,0,0.2)",
-               zIndex: 20,
-               borderBottomLeftRadius: 15,
-               borderBottomRightRadius: 15,
-               flexDirection: "row",
-               alignItems: "center",
-               justifyContent: "center",
-               paddingHorizontal: 16,
-            }}
-         >
-            {images.map((_, i) => {
-               return (
-                  <View
-                     key={i}
-                     style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: 8,
-                        marginHorizontal: 4,
-                        backgroundColor:
-                           i === imageIndex
-                              ? "rgba(255,255,255,0.8)"
-                              : "rgba(255,255,255,0.2)",
-                     }}
-                  ></View>
-               );
-            })}
-         </View>
-         <Image
-            source={{
-               uri: images[imageIndex],
-            }}
-            style={{ ...viewsSize }}
-         />
          <View
             transparent
             style={{
-               position: "absolute",
-               top: 0,
-               left: 0,
-               right: 0,
-               bottom: 0,
-               zIndex: 10,
-               flexDirection: "row",
+               marginLeft: 10,
             }}
          >
-            <TouchableWithoutFeedback
-               touchSoundDisabled
-               onPress={() =>
-                  setImageIndex(
-                     imageIndex !== 0 ? imageIndex - 1 : images.length - 1
-                  )
-               }
+            <Text
+               style={{
+                  fontFamily: "Sofia_Bold",
+                  fontSize: 30,
+               }}
             >
-               <View
-                  transparent
-                  style={{
-                     width: "50%",
-                     height: "100%",
-                  }}
-               />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-               touchSoundDisabled
-               onPress={() => setImageIndex((imageIndex + 1) % images.length)}
-            >
-               <View
-                  transparent
-                  style={{
-                     width: "50%",
-                     height: "100%",
-                  }}
-               />
-            </TouchableWithoutFeedback>
+               Discover
+            </Text>
+            <Text style={{ color: "#797979", fontSize: 15 }}>
+               Casablanca, Morocco
+            </Text>
          </View>
+         <TouchableWithoutFeedback>
+            <View
+               style={{
+                  width: 48,
+                  height: 48,
+                  backgroundColor: "#2D2D2D",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10,
+                  marginTop: 10,
+               }}
+            >
+               <Octicons name="settings" size={20} color="#878787" />
+            </View>
+         </TouchableWithoutFeedback>
       </View>
    );
 };

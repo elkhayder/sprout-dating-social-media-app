@@ -13,6 +13,7 @@ import Navigation from "../constants/Navigation";
 import useColorScheme from "../hooks/useColorScheme";
 import CardsScreen from "../screens/CardsScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -45,7 +46,7 @@ export default function BottomTabNavigator() {
       >
          <BottomTab.Screen
             name={Navigation.Home}
-            component={CardsStack}
+            component={CardsScreen}
             options={{
                tabBarIcon: ({ color }) => (
                   <AntDesign name="home" size={24} color={color} />
@@ -54,7 +55,7 @@ export default function BottomTabNavigator() {
          />
          <BottomTab.Screen
             name={Navigation.Matches}
-            component={CardsStack}
+            component={CardsScreen}
             options={{
                tabBarIcon: ({ color }) => (
                   <AntDesign name="hearto" size={22} color={color} />
@@ -80,74 +81,6 @@ export default function BottomTabNavigator() {
             }}
          />
       </BottomTab.Navigator>
-   );
-}
-
-// Each tab has its own navigation stack, you can read more about this pattern here:
-// https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const HomeStack = createStackNavigator();
-
-function CardsStack() {
-   const CardsHeader = ({ insets }: StackHeaderProps) => {
-      return (
-         <View
-            style={{
-               paddingTop: insets.top + 20,
-               paddingHorizontal: 16,
-               // height: 150,
-               flexDirection: "row",
-               alignItems: "center",
-               justifyContent: "space-between",
-            }}
-            // transparent
-         >
-            <View
-               transparent
-               style={{
-                  marginLeft: 10,
-               }}
-            >
-               <Text
-                  style={{
-                     fontFamily: "Sofia_Bold",
-                     fontSize: 30,
-                  }}
-               >
-                  Discover
-               </Text>
-               <Text style={{ color: "#797979", fontSize: 15 }}>
-                  Casablanca, Morocco
-               </Text>
-            </View>
-            <TouchableWithoutFeedback>
-               <View
-                  style={{
-                     width: 48,
-                     height: 48,
-                     backgroundColor: "#2D2D2D",
-                     alignItems: "center",
-                     justifyContent: "center",
-                     borderRadius: 10,
-                     marginTop: 10,
-                  }}
-               >
-                  <Octicons name="settings" size={20} color="#878787" />
-               </View>
-            </TouchableWithoutFeedback>
-         </View>
-      );
-   };
-
-   return (
-      <HomeStack.Navigator>
-         <HomeStack.Screen
-            name={Navigation.Discover}
-            component={CardsScreen}
-            options={{
-               header: CardsHeader,
-            }}
-         />
-      </HomeStack.Navigator>
    );
 }
 
