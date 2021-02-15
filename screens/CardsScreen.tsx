@@ -15,7 +15,7 @@ import Layout from "../constants/Layout";
 const SwipingPositionContext = React.createContext<any>({});
 
 export default function TabOneScreen() {
-   const [swipingPosition, setSwipingPosition] = React.useState({ X: 0, Y: 0 });
+   const [swipingPosition, setSwipingPosition] = React.useState({ x: 0, y: 0 });
    return (
       <SwipingPositionContext.Provider value={swipingPosition}>
          <View
@@ -39,10 +39,10 @@ export default function TabOneScreen() {
                showSecondCard
                stackSize={2}
                infinite
-               onSwiping={(X, Y) =>
+               onSwiping={(x, y) =>
                   setSwipingPosition({
-                     X,
-                     Y,
+                     x,
+                     y,
                   })
                }
             />
@@ -101,7 +101,6 @@ const RenderCard = (props: { cardData: any; cardIndex: number }) => {
    const { cardIndex, cardData } = props;
 
    const swipingPosition = React.useContext(SwipingPositionContext);
-   // React.useEffect(() => console.log(swipingPosition), [swipingPosition]);
 
    return (
       <View
@@ -143,10 +142,6 @@ const RenderCard = (props: { cardData: any; cardIndex: number }) => {
 const ImagesContainer = ({ images }: { images: String[] }) => {
    const [imageIndex, setImageIndex] = React.useState<number>(0);
 
-   React.useEffect(() => {
-      console.log(imageIndex);
-   }, [imageIndex]);
-
    const viewsSize = {
       width: Layout.window.width - 32,
       aspectRatio: 15 / 21,
@@ -174,46 +169,41 @@ const ImagesContainer = ({ images }: { images: String[] }) => {
                position: "absolute",
                top: 0,
                left: 0,
-               width: Layout.window.width - 32,
-               aspectRatio: 15 / 42,
+               right: 0,
+               bottom: 0,
+               zIndex: 10,
                flexDirection: "row",
-               zIndex: 99,
             }}
          >
             <TouchableWithoutFeedback
                touchSoundDisabled
-               onPress={() => {
+               onPress={() =>
                   setImageIndex(
                      imageIndex !== 0 ? imageIndex - 1 : images.length - 1
-                  );
-                  console.log("hey");
-               }}
+                  )
+               }
             >
-               <DummyView />
+               <View
+                  transparent
+                  style={{
+                     width: "50%",
+                     height: "100%",
+                  }}
+               />
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback
                touchSoundDisabled
                onPress={() => setImageIndex((imageIndex + 1) % images.length)}
             >
-               <DummyView />
+               <View
+                  transparent
+                  style={{
+                     width: "50%",
+                     height: "100%",
+                  }}
+               />
             </TouchableWithoutFeedback>
          </View>
       </View>
-   );
-};
-
-const DummyView = ({ style }: { style?: ViewStyle }) => {
-   return (
-      <View
-         transparent
-         style={[
-            {
-               width: (Layout.window.width - 32) / 2,
-               height: "100%",
-            },
-            style,
-         ]}
-         pointerEvents="none"
-      />
    );
 };
