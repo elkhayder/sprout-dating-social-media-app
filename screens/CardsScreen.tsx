@@ -1,33 +1,45 @@
 import * as React from "react";
-import { StatusBar, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+   Modal,
+   StyleSheet,
+   TouchableWithoutFeedback,
+   TouchableNativeFeedback,
+   Pressable,
+} from "react-native";
 import { FontAwesome, AntDesign, Feather, Octicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/core";
 
 import { Text, View } from "../components/Themed";
 import ProfileImagesSlider from "../components/ProfileImagesSlider";
 import Layout from "../constants/Layout";
-import { useNavigation } from "@react-navigation/core";
 import NavigationRoutes from "../constants/Navigation";
 import { Users } from "../data/Users";
 import { UserProfile } from "../types";
 
 import getAgeFromTimestamp from "../functions/getAgeFromTimestamp";
 import Colors from "../constants/Colors";
+import ScreenHeader from "../components/ScreenHeader";
 
 const SwiperRefContext = React.createContext<any>(null);
 
-export default function CardsScreen() {
+const CardsScreen = () => {
    const SwiperRef = React.useRef<Swiper<any> | null>(null);
-
+   const [isModalVisible, setIsModalVisible] = React.useState(false);
    return (
       <>
-         <CardsScreenHeader />
+         <ScreenHeader
+            title="Discover"
+            subTitle="Casablanca, Morocco"
+            RightIcon={({ color }) => (
+               <Octicons name="settings" size={20} color={color} />
+            )}
+            RightOnClick={() => setIsModalVisible(true)}
+         />
          <View
             style={{
                flex: 1,
-               // alignItems: "center",
-               // justifyContent: "center",
                position: "relative",
                paddingHorizontal: 16,
             }}
@@ -52,9 +64,15 @@ export default function CardsScreen() {
                <CallToActionButtons />
             </SwiperRefContext.Provider>
          </View>
+         <FiltersModal
+            isModalVisible={isModalVisible}
+            setIsModalVisible={setIsModalVisible}
+         />
       </>
    );
-}
+};
+
+export default CardsScreen;
 
 const CallToActionButtons = () => {
    const SwiperRef = React.useContext(SwiperRefContext);
@@ -114,7 +132,6 @@ const RenderCard = ({
    userIndex: number;
 }) => {
    const navigation = useNavigation();
-   console.log(userData);
    return (
       <View
          key={userData.id}
@@ -215,52 +232,78 @@ const RenderCard = ({
    );
 };
 
-const CardsScreenHeader = () => {
+const FiltersModal = ({
+   isModalVisible,
+   setIsModalVisible,
+}: {
+   isModalVisible: boolean;
+   setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
    return (
-      <View
-         style={{
-            paddingTop: 20 + StatusBar?.currentHeight,
-            paddingHorizontal: 16,
-            // height: 150,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-         }}
-         // transparent
+      <Modal
+         transparent
+         animationType="slide"
+         onRequestClose={() => setIsModalVisible(false)}
+         visible={isModalVisible}
       >
+         <TouchableWithoutFeedback
+            touchSoundDisabled
+            onPress={() => setIsModalVisible(false)}
+         >
+            <View
+               transparent
+               style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+               }}
+            ></View>
+         </TouchableWithoutFeedback>
          <View
             transparent
             style={{
-               marginLeft: 10,
+               position: "relative",
+               // height: "50%",
+               marginTop: "auto",
+               borderTopLeftRadius: 50,
+               borderTopRightRadius: 50,
+               backgroundColor: "#232323",
+               paddingTop: 30,
+               paddingBottom: 20,
+               paddingHorizontal: 24,
             }}
          >
-            <Text
-               style={{
-                  fontFamily: "Sofia_Bold",
-                  fontSize: 30,
-               }}
-            >
-               Discover
-            </Text>
-            <Text style={{ color: "#797979", fontSize: 15 }}>
-               Casablanca, Morocco
-            </Text>
-         </View>
-         <TouchableWithoutFeedback>
             <View
+               transparent
                style={{
-                  width: 48,
-                  height: 48,
-                  backgroundColor: "#2D2D2D",
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: 10,
-                  marginTop: 10,
+                  paddingHorizontal: 10,
                }}
             >
-               <Octicons name="settings" size={20} color="#878787" />
+               <Pressable
+                  android_disableSound
+                  onPress={() => setIsModalVisible(false)}
+                  hitSlop={{ top: 20, left: 20, right: 20, bottom: 20 }}
+               >
+                  <FontAwesome name="times" size={22} color="#9A9A9A" />
+               </Pressable>
+               <Text style={{ fontFamily: "Sofia_Medium", fontSize: 22 }}>
+                  Filters
+               </Text>
+               <Pressable
+                  android_disableSound
+                  onPress={() => setIsModalVisible(false)}
+                  hitSlop={{ top: 20, left: 20, right: 20, bottom: 20 }}
+               >
+                  <FontAwesome name="check" size={22} color="#9A9A9A" />
+               </Pressable>
             </View>
-         </TouchableWithoutFeedback>
-      </View>
+         </View>
+      </Modal>
    );
 };

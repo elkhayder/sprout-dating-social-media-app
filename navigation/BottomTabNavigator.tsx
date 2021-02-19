@@ -14,6 +14,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import CardsScreen from "../screens/CardsScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import InboxScreen from "../screens/InboxScreen";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -64,7 +65,7 @@ export default function BottomTabNavigator() {
          />
          <BottomTab.Screen
             name={Navigation.Inbox}
-            component={TabTwoNavigator}
+            component={InboxScreen}
             options={{
                tabBarIcon: ({ color }) => (
                   <Ionicons name="chatbubble-outline" size={24} color={color} />

@@ -5,4 +5,5 @@ export default {
    Settings: "Settings",
    Discover: "Discover",
    Profile: "Profile",
+   Conversation: "Conversation",
 };

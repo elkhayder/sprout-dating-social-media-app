@@ -3,7 +3,11 @@ import {
    DefaultTheme,
    DarkTheme,
 } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+   createStackNavigator,
+   TransitionSpecs,
+   TransitionPresets,
+} from "@react-navigation/stack";
 import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
@@ -13,6 +17,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 
 import LinkingConfiguration from "./LinkingConfiguration";
 import NavigationRoutes from "../constants/Navigation";
+import ConversationScreen from "../screens/ConversationScreen";
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -38,7 +43,10 @@ const Stack = createStackNavigator();
 function RootNavigator() {
    return (
       <Stack.Navigator
-         screenOptions={{ headerShown: false }}
+         screenOptions={{
+            headerShown: false,
+            ...TransitionPresets.SlideFromRightIOS,
+         }}
          initialRouteName="Root"
       >
          <Stack.Screen name="Root" component={BottomTabNavigator} />
@@ -50,11 +58,13 @@ function RootNavigator() {
          <Stack.Screen
             name={NavigationRoutes.Profile}
             component={ProfileScreen}
-            options={
-               {
-                  // headerShown: false,
-               }
-            }
+            options={{
+               ...TransitionPresets.ModalSlideFromBottomIOS,
+            }}
+         />
+         <Stack.Screen
+            name={NavigationRoutes.Conversation}
+            component={ConversationScreen}
          />
       </Stack.Navigator>
    );

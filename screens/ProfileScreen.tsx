@@ -1,15 +1,16 @@
-import { RouteProp, useNavigation } from "@react-navigation/core";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/core";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { ScrollView, StatusBar } from "react-native";
-import ProfileImagesSlider from "../components/ProfileImagesSlider";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 import { Text, View } from "../components/Themed";
 import getAgeFromTimestamp from "../functions/getAgeFromTimestamp";
 import { UserProfile } from "../types";
+import ProfileImagesSlider from "../components/ProfileImagesSlider";
 
-const ProfileScreen = ({ route, navigation }) => {
+const ProfileScreen = () => {
+   const route = useRoute();
    const { profile }: { profile: UserProfile } = route.params;
    return (
       <View style={{ flex: 1, position: "relative" }}>
@@ -90,7 +91,7 @@ const ProfileScreen = ({ route, navigation }) => {
                      </Text>
                   </View>
                </View>
-               <View style={{ marginBottom: 32 }}>
+               <View style={{ marginBottom: 16 }}>
                   <Text
                      style={{
                         fontFamily: "Sofia_Medium",
