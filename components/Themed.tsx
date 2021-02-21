@@ -32,11 +32,9 @@ export type ViewProps = {
 
 export function Text(props: TextProps) {
    const { style, lightColor, darkColor, ...otherProps } = props;
-   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-
    return (
       <DefaultText
-         style={[{ color, fontFamily: "Sofia_Regular" }, style]}
+         style={[{ color: "#FFFFFF", fontFamily: "Sofia_Regular" }, style]}
          {...otherProps}
       />
    );
@@ -44,9 +42,7 @@ export function Text(props: TextProps) {
 
 export function View(props: ViewProps) {
    const { style, lightColor, darkColor, transparent, ...otherProps } = props;
-   const backgroundColor = transparent
-      ? "transparent"
-      : useThemeColor({ light: lightColor, dark: darkColor }, "background");
+   const backgroundColor = transparent ? "transparent" : "#181818";
 
    return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }

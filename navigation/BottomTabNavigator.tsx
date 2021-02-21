@@ -29,7 +29,7 @@ export default function BottomTabNavigator() {
             activeTintColor: Colors[colorScheme].tabIconSelected,
             style: {
                height: 60,
-               backgroundColor: Colors[colorScheme].background,
+               backgroundColor: "#181818",
                // borderTopLeftRadius: 15,
                // borderTopRightRadius: 15,
                // elevation: 0,
